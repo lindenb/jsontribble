@@ -38,7 +38,9 @@ public static void main(String[] args) throws Exception
 		index=IndexFactory.loadIndex(indexFile.toString());
 		System.out.println("Chromosome:"+index.getSequenceNames());
 		System.out.println("Properties:"+index.getProperties());
-        AbstractFeatureReader<JSONFeature> reader = AbstractFeatureReader.getFeatureReader(
+       
+		@SuppressWarnings("unchecked")
+		AbstractFeatureReader<JSONFeature> reader = AbstractFeatureReader.getFeatureReader(
         		dbSnpJs.getAbsolutePath(), codec, index);
         
         CloseableTribbleIterator<JSONFeature> iter = reader.query("chr1",26602,26802);

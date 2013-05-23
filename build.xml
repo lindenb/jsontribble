@@ -1,0 +1,73 @@
+<project default="all">
+<property file="build.properties"/>
+
+ <path id="picard.lib">
+	<path path="${picard.jars}"/>
+ </path>
+
+
+<macrodef name="compile">
+	<attribute name="src.name"/>
+	<attribute name="main.class"/>
+	<attribute name="jar.name"/>
+	<sequential>
+		
+		<mkdir dir="dist"/>
+		<mkdir dir="tmp"/>
+		
+		<javac destdir="tmp" debug="true" includeantruntime="false">
+			<classpath refid="picard.lib"/>
+			<src path="src/main/java"/>
+			<include name="**/@{src.name}.java" />
+		</javac>
+		
+		<pathconvert property="manifest_@{jar.name}" pathsep=" " refid="picard.lib"/>
+		
+		<jar destfile="dist/@{jar.name}.jar" basedir="tmp">
+			
+			<manifest>
+				<attribute name="Built-By" value="${user.name}"/>
+				<attribute name="Main-Class" value="@{{main.class}"/>
+				<attribute name="Class-Path" value="${manifest_cp1}"/>
+			</manifest>
+		</jar>
+		<delete dir="tmp"/>
+	</sequential>
+</macrodef>	
+
+    <target name="all" depends="applications" description="make all">
+        
+    </target>
+
+    <target name="applications" depends="sort,index,query" />
+        
+	  <target name="sort">
+			<compile 
+				jar.name="jsonsort"
+				main.class="com.github.lindenb.jsontribble.tools.JSONSorter"
+				src.name="JSONSorter"
+				/>
+	  </target>
+	
+	  <target name="index">
+		<compile 
+			jar.name="jsonindex"
+			main.class="com.github.lindenb.jsontribble.tools.JSONIndexer"
+			src.name="JSONIndexer"
+			/>
+	  </target>
+	  	
+	  <target name="query">
+		<compile 
+			jar.name="jsonquery"
+			main.class="com.github.lindenb.jsontribble.tools.JSONQuery"
+			src.name="JSONQuery"
+			/>
+	  </target>
+
+	<target name="clean">
+		<delete dir="tmp"/>
+		<delete dir="dist"/>
+	</target>
+	
+</project>

@@ -65,7 +65,7 @@ public class JSONCodec extends StatelessJsonParser
 
 			if(key.equals("header"))
 				{
-				header=any(in);
+				header=object(in);
 				}
 			else if(key.equals("features"))
 				{
