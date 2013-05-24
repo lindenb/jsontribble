@@ -14,11 +14,11 @@
 <h3>JSONIndexer</h3>
 <p>USAGE: JSONIndexer [options]
 <p>
-<p>Index an JSON features file with tribble. Features must have been sorted on chrom/start/end.
+<p>Creates a Tribble Index for a JSON-file. Features must have been sorted on chrom/start/end.
 <p>The tribble indexes are created in the same folder of the input as : (input.json).idx</p>
 <table>
 <tr><th>Option</th><th>Description</th></tr>
-<tr><td>INPUT=File</td><td>the json input file (default: stdin)  This option may be specified 0 or more times. </td></tr>
+<tr><td>INPUT=File</td><td>the json input file. The json file must be indexed with tribble.  (default: stdin)  This option may be specified 0 or more times. </td></tr>
 </table>
 <br/>
 <a name="JSONQuery"/>
@@ -32,5 +32,21 @@
 <tr><td>INPUT=String</td><td>the json input file  Required. </td></tr>
 <tr><td>BED=File</td><td>bed regions  Default value: null. </td></tr>
 <tr><td>REGION=String</td><td>regions (chrom:start-end)  This option may be specified 0 or more times. </td></tr>
+</table>
+<br/>
+<a name="VCFAnnot"/>
+<h3>VCFAnnot</h3>
+<p>USAGE: VCFAnnot [options]
+<p>
+<p>Annot a VCF with JSON.
+<p></p>
+<table>
+<tr><th>Option</th><th>Description</th></tr>
+<tr><td>JSON=String</td><td>JSON file indexed with tribble  Default value: null. </td></tr>
+<tr><td>INPUT=File</td><td>VCF file  Default value: null. </td></tr>
+<tr><td>OUTPUT=File</td><td>VCF file annotated  Default value: null. </td></tr>
+<tr><td>EXTRA_HEADERS=String</td><td>Add this extra header to the VCF header  This option may be specified 0 or more times. </td></tr>
+<tr><td>SCRIPT=String</td><td>javascript code  Default value: null. </td></tr>
+<tr><td>SCRIPTF=File</td><td>javascript file  Default value: null. </td></tr>
 </table>
 <br/>

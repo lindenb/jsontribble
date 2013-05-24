@@ -206,6 +206,21 @@ ame":"Exon 2"},{"start":324438,"end":328581,"name":"Exon 1"}],"proteinID":"C9J4L
 ```
 <br/>
 
+<h3>VCFAnnot</h3>
+<p>USAGE: VCFAnnot [options]
+<p>
+<p>Annot a VCF with JSON + javascript(rhino engine). Currently under developpement.
+<p></p>
+<table>
+<tr><th>Option</th><th>Description</th></tr>
+<tr><td>JSON=String</td><td>JSON file indexed with tribble  Default value: null. </td></tr>
+<tr><td>INPUT=File</td><td>VCF file  Default value: null. </td></tr>
+<tr><td>OUTPUT=File</td><td>VCF file annotated  Default value: null. </td></tr>
+<tr><td>EXTRA_HEADERS=String</td><td>Add this extra header to the VCF header  This option may be specified 0 or more times. </td></tr>
+<tr><td>SCRIPT=String</td><td>javascript code  Default value: null. </td></tr>
+<tr><td>SCRIPTF=File</td><td>javascript file  Default value: null. </td></tr>
+</table>
+<br/>
 
 
 Running the REST Application
