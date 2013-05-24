@@ -1,11 +1,38 @@
 <project default="all">
 <property file="build.properties"/>
-
+<property name="asadmin" value="${glassfish.dir}/bin/asadmin"/>
  <path id="picard.lib">
-	<path path="${picard.jars}"/>
+ 	<pathelement location="${picard.dir}/picard-${picard.version}.jar"/>
+ 	<pathelement location="${picard.dir}/sam-${picard.version}.jar"/>
+ 	<pathelement location="${picard.dir}/tribble-${picard.version}.jar"/>
+ </path>
+
+ <path id="webapp.lib">
+ 	<path refid="picard.lib"/>
+	<path location="${glassfish.dir}/glassfish/modules/javax.servlet-api.jar"/>
+ 	<path location="${glassfish.dir}/glassfish/modules/jersey-core.jar"/>
  </path>
 
 
+<macrodef name="cmd.doc">
+    <attribute name="main-class"/>
+    <attribute name="jar"/>
+    <sequential>
+    	<mkdir dir="doc"/>
+        <java classname="net.sf.picard.cmdline.CreateHtmlDocForProgram"
+      		  output="doc/cmdlines.html" append="true"
+              failonerror="true">
+            <classpath>
+             	<pathelement location="${picard.dir}/picard-${picard.version}.jar"/>
+             	<pathelement location="${picard.dir}/sam-${picard.version}.jar"/>
+             	<pathelement location="${picard.dir}/tribble-${picard.version}.jar"/>
+             	<pathelement location="@{jar}"/>
+            </classpath>
+            <arg value="@{main-class}"/>
+        </java>
+    </sequential>
+</macrodef>	
+	
 <macrodef name="compile">
 	<attribute name="src.name"/>
 	<attribute name="main.class"/>
@@ -27,8 +54,8 @@
 			
 			<manifest>
 				<attribute name="Built-By" value="${user.name}"/>
-				<attribute name="Main-Class" value="@{{main.class}"/>
-				<attribute name="Class-Path" value="${manifest_cp1}"/>
+				<attribute name="Main-Class" value="@{main.class}"/>
+				<attribute name="Class-Path" value="${manifest_@{jar.name}}"/>
 			</manifest>
 		</jar>
 		<delete dir="tmp"/>
@@ -38,7 +65,14 @@
     <target name="all" depends="applications" description="make all">
         
     </target>
-
+	
+	<target name="documentation" depends="applications">
+		<delete file="doc/cmdlines.html"/>
+		<cmd.doc main-class="com.github.lindenb.jsontribble.tools.JSONSorter" jar="dist/jsonsort.jar"/>
+		<cmd.doc main-class="com.github.lindenb.jsontribble.tools.JSONIndexer"  jar="dist/jsonindex.jar"/>
+		<cmd.doc main-class="com.github.lindenb.jsontribble.tools.JSONQuery"  jar="dist/jsonquery.jar"/>
+	</target>
+	
     <target name="applications" depends="sort,index,query" />
         
 	  <target name="sort">
@@ -70,4 +104,59 @@
 		<delete dir="dist"/>
 	</target>
 	
+	<target name="webapp" depends="deploy.webapp"/>
+	
+	<target name="deploy.webapp" depends="dist/jsontribble.war">
+        <exec executable="${asadmin}" failonerror="true">
+        	<arg value="deploy"/>
+        	<arg value="--port"/> <arg value="${glassfish.admin.port}"/>
+        	<arg value="--force"/> <arg value="true"/>
+        	<arg value="dist/jsontribble.war"/>
+        </exec>
+	</target>
+	
+	 <target name="undeploy.webapp"  description="Deploy" >
+	        <exec executable="${asadmin}" failonerror="false" >
+	        	<arg value="undeploy"/>
+	        	<arg value="--port"/> <arg value="${glassfish.admin.port}"/>
+	        	<arg value="ngsproject"/>
+	        </exec>
+	 </target>
+
+	<target name="dist/jsontribble.war">
+		<mkdir dir="dist"/>
+		<mkdir dir="tmp"/>
+		
+		<javac destdir="tmp" 
+			srcdir="src/rest/java"
+			debug="true"
+			includeantruntime="false">
+				<sourcepath>
+					<path location="src/main/java"/>
+				</sourcepath>
+				<classpath>
+					<path refid="webapp.lib"/>
+				</classpath>
+				<include name="**/*.java" />
+		</javac>
+	
+		<copy file="src/rest/webapp/WEB-INF/web.xml"  tofile="tmp/web.xml" />
+		
+		<replace file="tmp/web.xml" token="__PATH_TO_CONFIG__" value="${webapp.json.config}" />
+		
+		<war destfile="dist/jsontribble.war"
+			webxml="tmp/web.xml"
+			>
+			<lib file="${picard.dir}/picard-${picard.version}.jar"/>
+			<lib file="${picard.dir}/sam-${picard.version}.jar"/>
+			<lib file="${picard.dir}/tribble-${picard.version}.jar"/>
+			
+			<classes dir="tmp"/>
+			<fileset dir="./src/rest/webapp">
+			</fileset>
+		</war>
+		
+		<delete dir="tmp"/>	
+	</target>
+
 </project>

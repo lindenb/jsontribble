@@ -5,3 +5,5 @@ bin
 *.class
 dist
 tmp
+*.idx
+src/test/resources/*.json

@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import org.broad.tribble.FeatureCodecHeader;
 import org.broad.tribble.readers.PositionalBufferedStream;
@@ -15,16 +16,21 @@ import com.github.lindenb.jsontribble.JSONCodec;
 import com.github.lindenb.jsontribble.JSONFeature;
 import com.github.lindenb.jsontribble.JSONPicardCodec;
 import com.github.lindenb.jsontribble.json.JsonPrinter;
+import com.github.lindenb.jsontribble.json.JsonUtil;
 
 import net.sf.picard.cmdline.CommandLineProgram;
 import net.sf.picard.cmdline.Option;
 import net.sf.picard.cmdline.StandardOptionDefinitions;
+import net.sf.picard.cmdline.Usage;
 import net.sf.samtools.util.CloseableIterator;
 import net.sf.samtools.util.SortingCollection;
 
 public class JSONSorter extends CommandLineProgram
 	{
-    @Option(optional=true,doc="the json input file(s) (default: stdin)",shortName=StandardOptionDefinitions.INPUT_SHORT_NAME)
+	@Usage
+    public String USAGE = getStandardUsagePreamble() + "Sorts the JSON-based features.\n";
+
+    @Option(optional=true,doc="the json input file(s) (default: stdin). The header is token from the first file",shortName=StandardOptionDefinitions.INPUT_SHORT_NAME)
     public List<File> INPUT = new ArrayList<File>();
     @Option(optional=true,doc="the json output file (default: stdout)",shortName=StandardOptionDefinitions.OUTPUT_SHORT_NAME)
     public File OUPUT = null;
@@ -70,7 +76,8 @@ public class JSONSorter extends CommandLineProgram
 				if(index==0)
 					{
 					pw.print("{\"header\":");
-					JsonPrinter.print(pw, header.getHeaderValue());
+					Map<String,Object> h=JsonUtil.asObject(header.getHeaderValue());
+					JsonPrinter.print(pw, h);
 					pw.print(",\"features\":[\n");
 					}
 				
@@ -82,7 +89,7 @@ public class JSONSorter extends CommandLineProgram
 					}
 				
 				in.close();
-				if(index==0 && INPUT.isEmpty()) break;
+				if(index+1>=INPUT.size()) break;
 				}
 			
 			sorted.doneAdding();
@@ -93,7 +100,7 @@ public class JSONSorter extends CommandLineProgram
 				JSONFeature feat = iter.next();
 				if(!first) pw.print(',');
 				first=false;
-				JsonPrinter.print(pw,feat);
+				JsonPrinter.print(pw,feat.getContent());
 				}
 			sorted.cleanup();
 			iter.close();

@@ -6,8 +6,11 @@ import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
+
 @SuppressWarnings("rawtypes")
-public class JsonPrinter
+public class JsonPrinter extends JsonUtil
 	{
 	public static String toString(Object o)
 		{
@@ -75,7 +78,7 @@ public class JsonPrinter
 		else
 			{
 			String s=String.valueOf(o);
-			w.print('\"');
+			w.print('"');
 			for(int i=0;i< s.length();++i)
 				{
 				char c=s.charAt(i);
@@ -90,8 +93,53 @@ public class JsonPrinter
 						}
 					}
 				}
-			w.print('\"');
+			w.print('"');
 			}
 		}
 	
+	private static String localName(String key)
+		{
+		key=key.trim().replaceAll("[^A-Za-z_0-9]+", "_");
+		if(key.isEmpty() || !(Character.isLetter(key.charAt(0)) || key.startsWith("_")))
+			{
+			key="_"+key;
+			}
+		return key;
+		}
+	public static void write(XMLStreamWriter w,String key,Object value) throws XMLStreamException
+		{
+		String name=localName(key);
+		if(value==null)
+			{
+			w.writeEmptyElement(name);
+			return;
+			}
+		w.writeStartElement(name);
+		if(value instanceof Number || value instanceof Boolean)
+			{
+			w.writeAttribute("type", value.getClass().getSimpleName().toLowerCase());
+			w.writeCharacters(String.valueOf(value));
+			}
+		else if(value instanceof List || value.getClass().isArray())
+			{
+			List L=asArray(value);
+			for(int i=0;i< L.size();++i)
+				{
+				write(w,key,L.get(i));
+				}
+			}
+		else if(value instanceof Map)
+			{
+			Map m=asObject(value);
+			for(Object k:m.keySet())
+				{
+				write(w,String.valueOf(k),m.get(k));
+				}
+			}
+		else
+			{
+			w.writeCharacters(String.valueOf(value));
+			}
+		w.writeEndElement();
+		}
 	}

@@ -13,7 +13,10 @@ import org.broad.tribble.readers.PositionalBufferedStream;
 
 
 public class StatelessJsonParser
+	extends JsonUtil
 	{
+	
+	
 	private static final ObjectFactory<List<Object>> DEFAULT_LIST_FACTORY=new ObjectFactory<List<Object>>()
 			{
 			@Override
@@ -76,7 +79,13 @@ public class StatelessJsonParser
 			}
 		};
 	private NumberParser numberParser=DEFAULT_NUMBER_PARSER;
-			
+		
+	private String nice(int c)
+		{
+		if(c>=32 && c<255) return "\""+((char)c)+"\"";
+		return "CHAR("+c+")";
+		}
+	
 	protected int readSkipWs(PositionalBufferedStream stream)
 		throws IOException
 		{
@@ -266,7 +275,7 @@ public class StatelessJsonParser
 			{
 			case ',':
 			case ']': return c;
-			default: throw new IOException("Expected ']' or ',' but got '"+c+"'");
+			default: throw new IOException("Expected ']' or ',' but got "+nice(c));
 			}
 		}
 	
@@ -304,8 +313,8 @@ public class StatelessJsonParser
 		int c=readSkipWs(stream);
 		switch(c)
 			{
-			case '{': return jsonArray(stream);
-			case '[': return jsonObject(stream);
+			case '{': return jsonObject(stream);
+			case '[': return jsonArray(stream);
 			case 't': mustConsumme(stream, "rue"); return Boolean.TRUE;
 			case 'f': mustConsumme(stream, "alse"); return Boolean.FALSE;
 			case 'n': mustConsumme(stream, "ull");return null;
@@ -322,5 +331,11 @@ public class StatelessJsonParser
 				throw new IOException("Bad json. found "+(char)c);
 				}
 			}
+		}
+	public static void main(String[] args) throws IOException
+		{
+		JsonPrinter.print(System.out,
+				new StatelessJsonParser().any(new PositionalBufferedStream(System.in))
+				);
 		}
 	}

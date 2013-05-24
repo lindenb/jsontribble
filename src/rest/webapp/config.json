@@ -1,0 +1,16 @@
+{
+"resources":[
+ 	{
+	"name": "dbsnp",
+	"path": "/home/lindenb/src/jsontribble/src/test/resources/dbsnp.json"
+	},
+	{
+	"name": "knownGenes",
+	"path": "/home/lindenb/src/jsontribble/src/test/resources/knownGenes.json"
+	},
+	{
+	"name": "merge",
+	"path": "/home/lindenb/src/jsontribble/src/test/resources/merge.json"
+	}
+ ]
+}
