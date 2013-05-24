@@ -1,4 +1,4 @@
-NGS PROJECTS
+JSON-TRIBBLE
 ============
 
 **Tribble** ( http://code.google.com/p/tribble/ ) is a java library for indexing and querying genomic file formats. It was originally developed by members of the Integrative Genomics Viewer (IGV) and Genome Analysis Toolkit (GATK) at the Broad Institute. 
