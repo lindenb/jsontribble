@@ -71,9 +71,10 @@
 		<cmd.doc main-class="com.github.lindenb.jsontribble.tools.JSONSorter" jar="dist/jsonsort.jar"/>
 		<cmd.doc main-class="com.github.lindenb.jsontribble.tools.JSONIndexer"  jar="dist/jsonindex.jar"/>
 		<cmd.doc main-class="com.github.lindenb.jsontribble.tools.JSONQuery"  jar="dist/jsonquery.jar"/>
+		<cmd.doc main-class="com.github.lindenb.jsontribble.tools.VCFAnnot"  jar="dist/vcfannot.jar"/>
 	</target>
 	
-    <target name="applications" depends="sort,index,query" />
+    <target name="applications" depends="sort,index,query,vcfannot" />
         
 	  <target name="sort">
 			<compile 
@@ -98,6 +99,15 @@
 			src.name="JSONQuery"
 			/>
 	  </target>
+	
+	  	<target name="vcfannot">
+		<compile 
+			jar.name="vcfannot"
+			main.class="com.github.lindenb.jsontribble.tools.VCFAnnot"
+			src.name="VCFAnnot"
+			/>
+	  </target>
+	
 
 	<target name="clean">
 		<delete dir="tmp"/>
