@@ -3,6 +3,7 @@ package com.github.lindenb.jsontribble.tools;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,13 +12,17 @@ import java.util.regex.Pattern;
 import net.sf.picard.cmdline.CommandLineProgram;
 import net.sf.picard.cmdline.Option;
 import net.sf.picard.cmdline.StandardOptionDefinitions;
+import net.sf.picard.cmdline.Usage;
 import net.sf.picard.io.IoUtil;
 
 import org.broad.tribble.AbstractFeatureReader;
 import org.broad.tribble.CloseableTribbleIterator;
+import org.broad.tribble.FeatureCodecHeader;
 import org.broad.tribble.Tribble;
 import org.broad.tribble.index.Index;
 import org.broad.tribble.index.IndexFactory;
+import org.broad.tribble.readers.PositionalBufferedStream;
+import org.broad.tribble.util.ParsingUtils;
 
 import com.github.lindenb.jsontribble.JSONCodec;
 import com.github.lindenb.jsontribble.JSONFeature;
@@ -25,11 +30,15 @@ import com.github.lindenb.jsontribble.json.JsonPrinter;
 
 public class JSONQuery extends CommandLineProgram
 	{
+	@Usage
+    public String USAGE = getStandardUsagePreamble() + "Query genomic locations from a JSON-based genomic file.\n";
+
+	
     @Option(optional=false,doc="the json input file",shortName=StandardOptionDefinitions.INPUT_SHORT_NAME)
     public String INPUT = null;
     @Option(optional=true,doc="bed regions",shortName="B")
     public File BED = null;
-    @Option(optional=true,doc="regions (chrom:start-end)",shortName="L")
+    @Option(optional=true,doc="regions (chrom:start-end)",shortName="L",minElements=0)
     public List<String> REGION = new ArrayList<String>();
   
     private long query(
@@ -74,7 +83,18 @@ public class JSONQuery extends CommandLineProgram
 						codec,
 						index
 						);
+			
+			
+			InputStream inputStream = ParsingUtils.openInputStream(INPUT);
+			PositionalBufferedStream pin=new PositionalBufferedStream(inputStream);
+			FeatureCodecHeader header=codec.readHeader(pin);
+			inputStream.close();
 
+			
+			out.print("{\"header\":");
+			JsonPrinter.print(out,header.getHeaderValue());
+			out.print(",\"features\":[");
+			
 			
 			
 			long count=0L;
@@ -130,6 +150,6 @@ public class JSONQuery extends CommandLineProgram
 		}
 	public static void main(String[] args)
 		{
-		new JSONIndexer().instanceMainWithExit(args);
+		new JSONQuery().instanceMainWithExit(args);
 		}
 	}

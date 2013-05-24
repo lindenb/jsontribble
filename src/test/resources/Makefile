@@ -8,7 +8,8 @@ JAVA=java
 	$(JAVA) -jar ${jars.folder}/jsonindex.jar  I=$<
 
 all: $(addsuffix .idx,$(json.files))
-
+	#query the first json
+	$(JAVA) -jar ${jars.folder}/jsonquery.jar L=chr1:12048-1204800 I=merge.json | fold -w 80 | head -n 20
 
 merge.json: dbsnp.json knownGenes.json
 	$(JAVA) -jar ${jars.folder}/jsonsort.jar O=$@ $(foreach F, $^, I=${F})  > $@

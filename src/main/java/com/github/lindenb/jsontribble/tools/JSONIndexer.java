@@ -23,11 +23,11 @@ public class JSONIndexer extends CommandLineProgram
 	{
 	@Usage
     public String USAGE = getStandardUsagePreamble() +
-    		"Index an JSON features file with tribble. Features must have been sorted on chrom/start/end.\n"+
+    		"Creates a Tribble Index for a JSON-file. Features must have been sorted on chrom/start/end.\n"+
     		"The tribble indexes are created in the same folder of the input as : (input.json)"+Tribble.STANDARD_INDEX_EXTENSION
     		;
 
-    @Option(optional=true,minElements=0,doc="the json input file (default: stdin)",shortName=StandardOptionDefinitions.INPUT_SHORT_NAME)
+    @Option(optional=true,minElements=0,doc="the json input file. The json file must be indexed with tribble.  (default: stdin)",shortName=StandardOptionDefinitions.INPUT_SHORT_NAME)
     public List<File> INPUT = new ArrayList<File>();
     
     

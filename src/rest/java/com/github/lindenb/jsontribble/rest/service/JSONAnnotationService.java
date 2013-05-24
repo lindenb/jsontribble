@@ -88,7 +88,7 @@ public class JSONAnnotationService
 				{
 				MappingResource mr=name2resource.get(rsrcName);
 				if(mr==null) throw new WebApplicationException(Status.NOT_FOUND);
-				JsonPrinter.print(out,mr.getIndex().getSequenceNames());
+				JsonPrinter.print(out,mr.getIndex().getSequenceNames().toArray());
 				}
 			};
 		}

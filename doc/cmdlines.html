@@ -2,27 +2,30 @@
 <h3>JSONSorter</h3>
 <p>USAGE: JSONSorter [options]
 <p>
-<p>Sorts the JSON-bases featutes.
+<p>Sorts the JSON-based features.
 <p></p>
 <table>
 <tr><th>Option</th><th>Description</th></tr>
-<tr><td>INPUT=File</td><td>the json input file(s) (default: stdin)  This option may be specified 0 or more times. </td></tr>
+<tr><td>INPUT=File</td><td>the json input file(s) (default: stdin). The header is token from the first file  This option may be specified 0 or more times. </td></tr>
 <tr><td>OUPUT=File</td><td>the json output file (default: stdout)  Default value: null. </td></tr>
 </table>
 <br/>
 <a name="JSONIndexer"/>
 <h3>JSONIndexer</h3>
-<p>Usage: program [options...]
-<p></p>
+<p>USAGE: JSONIndexer [options]
+<p>
+<p>Index an JSON features file with tribble. Features must have been sorted on chrom/start/end.
+<p>The tribble indexes are created in the same folder of the input as : (input.json).idx</p>
 <table>
 <tr><th>Option</th><th>Description</th></tr>
-<tr><td>INPUT=File</td><td>the json input file (default: stdin)  Required. </td></tr>
-<tr><td>INDEX=File</td><td>index filename  Default value: null. </td></tr>
+<tr><td>INPUT=File</td><td>the json input file (default: stdin)  This option may be specified 0 or more times. </td></tr>
 </table>
 <br/>
 <a name="JSONQuery"/>
 <h3>JSONQuery</h3>
-<p>Usage: program [options...]
+<p>USAGE: JSONQuery [options]
+<p>
+<p>Query genomic locations from a JSON-based genomic file.
 <p></p>
 <table>
 <tr><th>Option</th><th>Description</th></tr>
